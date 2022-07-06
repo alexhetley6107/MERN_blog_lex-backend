@@ -1,6 +1,8 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import multer from 'multer';
+import cors from 'cors';
+import fs from 'fs';
 
 import { registerValidation, loginValidation, postCreateValidation } from './validation.js';
 import { PostController, UserController } from './controllers/index.js';
@@ -18,6 +20,9 @@ const app = express();
 
 const storage = multer.diskStorage({
 	destination: (_, __, cb) => {
+		if (!fs.existsSync('uploads')) {
+			fs.mkdirSync('uploads');
+		}
 		cb(null, 'uploads');
 	},
 	filename: (_, file, cb) => {
@@ -28,11 +33,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 app.use(express.json());
+app.use(cors());
 app.use('/uploads', express.static('uploads'));
-
-app.get('/', (req, res) => {
-	res.send('Hello Dear World');
-});
 
 //login
 app.post('/auth/login', loginValidation, handleValidationErrors, UserController.login);
