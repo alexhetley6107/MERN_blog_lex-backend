@@ -8,8 +8,7 @@ import { registerValidation, loginValidation, postCreateValidation } from './val
 import { PostController, UserController } from './controllers/index.js';
 import { checkAuth, handleValidationErrors } from './utils/index.js';
 
-const db =
-	'mongodb+srv://admin_hetley:Vegirdezzzhetley1996@cluster0.am90r.mongodb.net/blog?retryWrites=true&w=majority';
+const db = process.env.MONGODB_URI;
 
 mongoose
 	.connect(db)
@@ -63,7 +62,7 @@ app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
 	});
 });
 
-app.listen(4444, (err) => {
+app.listen(process.env.PORT || 4444, (err) => {
 	if (err) {
 		console.log(err);
 	}
